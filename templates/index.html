@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stock Price Visualizer</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        width: 80%;
+        margin: 20px auto;
+        padding: 20px;
+        background: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .form-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      select,
+      input[type="submit"] {
+        margin: 10px;
+        padding: 10px;
+        font-size: 1em;
+      }
+      .spike-lines {
+        display: flex;
+        align-items: center;
+      }
+      #plotly-div {
+        width: 100%;
+        height: 500px;
+      }
+      .prediction {
+        text-align: center;
+        margin-top: 20px;
+      }
+      footer {
+        text-align: center;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Stock Price Visualizer</h1>
+      </header>
+      <div id="plotly-div"></div>
+      <form method="POST" action="/" class="form-section">
+        <h2>Stock Selection</h2>
+        <label for="stockChoice">Choose a stock:</label>
+        <select id="stockChoice" name="stockChoice">
+          <option value="Apple">Apple</option>
+          <option value="Amazon">Amazon</option>
+          <option value="Google">Google</option>
+          <option value="Tesla">Tesla</option>
+        </select>
+        <h2>Prediction Interval</h2>
+        <label for="interval">Select Interval:</label>
+        <select id="interval" name="interval">
+          <option value="1m">1 Month</option>
+          <option value="3m">3 Months</option>
+          <option value="6m">6 Months</option>
+          <option value="1y">1 Year</option>
+          <option value="2y">2 Years</option>
+          <option value="5y">5 Years</option>
+        </select>
+        <div class="spike-lines">
+          <input type="checkbox" id="spike-lines" name="spike-lines" />
+          <label for="spike-lines">Show Spike Lines (Hover Information)</label>
+        </div>
+        <input type="submit" value="Update Graph" />
+      </form>
+      <footer>&copy; 2024 Your Company Name. All rights reserved.</footer>
+    </div>
+    <script>
+      var graphJSON = {{ graphJSON | safe }};
+      Plotly.newPlot('plotly-div', graphJSON.data, graphJSON.layout, { responsive: true });
+    </script>
+    {% if prediction and future_date %}
+    <div class="prediction">
+      <h2>Prediction</h2>
+      <!-- Format date to exclude time -->
+      <p>Predicted Closing Price: ₹{{ "%.2f" % prediction }}</p>
+      <!-- Display in INR -->
+    </div>
+    {% endif %}
+  </body>
+</html>
